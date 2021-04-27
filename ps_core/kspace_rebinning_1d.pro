@@ -11,6 +11,13 @@ function kspace_rebinning_1d, power, k1_mpc, k2_mpc, k3_mpc, k_edges_mpc, $
   power_size = size(power, /dimensions)
   power_dim = n_elements(power_size)
 
+  if n_elements(wedge_amp) gt 1 then begin
+    message, 'More than one wedge_amp cannot be used.'
+  endif
+  if n_elements(wedge_amp) eq 0 then begin
+    wedge_amp = 0
+  endif
+
   if keyword_set(kpar_power) and keyword_set(kperp_power) then begin
     message, 'Only one of kpar_power and kperp_power can be set'
   endif
@@ -239,11 +246,10 @@ function kspace_rebinning_1d, power, k1_mpc, k2_mpc, k3_mpc, k_edges_mpc, $
         endif
       endelse
 
-      if n_elements(wedge_amp) gt 0 then begin
-
+      if wedge_amp gt 0 then begin
         temp_kpar = rebin(reform(kz_mpc, 1, 1, n_kz), n_kx, n_ky, n_kz)
         temp_kperp = rebin(kperp_vals, n_kx, n_ky, n_kz)
-        wh_above_wedge = where(temp_kpar gt temp_kperp*max(wedge_amp), $
+        wh_above_wedge = where(temp_kpar gt temp_kperp*wedge_amp, $
           count_above_wedge, ncomplement = count_below_wedge, complement = wh_below_wedge)
         undefine, temp_kperp, temp_kpar
 
@@ -532,8 +538,8 @@ function kspace_rebinning_1d, power, k1_mpc, k2_mpc, k3_mpc, k_edges_mpc, $
 
     endif
 
-    if n_elements(wedge_amp) gt 0 then begin
-      wh_above_wedge = where(temp_kpar gt temp_kperp*max(wedge_amp), count_above_wedge)
+    if wedge_amp gt 0 then begin
+      wh_above_wedge = where(temp_kpar gt temp_kperp*wedge_amp, count_above_wedge)
       if count_above_wedge gt 0 then begin
         temp = temp[wh_above_wedge]
         power_use = power_use[wh_above_wedge]
@@ -591,7 +597,7 @@ function kspace_rebinning_1d, power, k1_mpc, k2_mpc, k3_mpc, k_edges_mpc, $
         omax = k_max, locations = log_k_locs, reverse_indices = k_ri)
     endelse
 
-    if n_elements(wedge_amp) gt 0 then if count_above_wedge gt 0 then begin
+    if wedge_amp gt 0 then if count_above_wedge gt 0 then begin
       power_use = power_use[wh_above_wedge]
       if n_elements(noise_expval_use) gt 0 then noise_expval_use = noise_expval_use[wh_above_wedge]
       if n_elements(weights_use) gt 0 then weights_use = weights_use[wh_above_wedge]
