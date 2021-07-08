@@ -811,6 +811,19 @@ pro compare_plot_prep, folder_names, obs_info, $
         kperp_lambda_conv = getvar_savefile(input_savefile1[slice_i, cube_i], 'kperp_lambda_conv')
         hubble_param = getvar_savefile(input_savefile1[slice_i, cube_i], 'hubble_param')
       endelse
+      
+      if tag_exist(plot_2d_options, 'kperp_lambda_plot_range') and $
+        not tag_exist(plot_2d_options, 'kperp_plot_range') then begin
+
+        kperp_plot_range = plot_2d_options.kperp_lambda_plot_range / kperp_lambda_conv
+
+        ;; if we're plotting in [k]=h/Mpc then need to convert from 1/Mpc
+        if plot_options.hinv then kperp_plot_range = kperp_plot_range / hubble_param
+
+        plot_2d_options = create_plot_2d_options(plot_2d_options = plot_2d_options, $
+          kperp_plot_range = kperp_plot_range)
+      endif
+
       if not tag_exist(plot_2d_options, 'kperp_plot_range') then begin
         kperp_plot_range = [5./kperp_lambda_conv, min([file_struct_arr1.kspan/2., $
           file_struct_arr1.max_baseline_lambda])/kperp_lambda_conv]

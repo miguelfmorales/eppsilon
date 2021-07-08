@@ -24,7 +24,8 @@ pro ps_diff_wrapper, folder_names_in, obs_names_in, $
     kx_range_lambda_1dave = kx_range_lambda_1dave, ky_range_1dave = ky_range_1dave, $
     ky_range_lambda_1dave = ky_range_lambda_1dave, $
     kperp_range_lambda_kparpower = kperp_range_lambda_kparpower, $
-    kpar_range_kperppower = kpar_range_kperppower
+    kpar_range_kperppower = kpar_range_kperppower, $
+    kperp_plot_range = kperp_plot_range, kperp_lambda_plot_range = kperp_lambda_plot_range
 
   if n_elements(folder_names_in) gt 2 then message, 'only 1 or 2 folder_names allowed'
   if n_elements(folder_names_in) eq 0 then message, 'at least 1 folder name must be specified'
@@ -238,7 +239,9 @@ pro ps_diff_wrapper, folder_names_in, obs_names_in, $
     png = png, eps = eps, pdf = pdf)
 
   plot_2d_options = create_plot_2d_options(kperp_linear_axis = kperp_linear_axis, $
-    kpar_linear_axis = kpar_linear_axis, data_range = data_range, color_type = color_type)
+    kpar_linear_axis = kpar_linear_axis, $
+    kperp_plot_range = kperp_plot_range, kperp_lambda_plot_range = kperp_lambda_plot_range, $
+    data_range = data_range, color_type = color_type)
 
   ps_difference_plots, folder_names, obs_info, ps_foldernames = ps_foldernames, $
     cube_types, pols, uvf_options0 = uvf_options0, uvf_options1 = uvf_options1, $
